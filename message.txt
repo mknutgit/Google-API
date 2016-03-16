@@ -1,1 +1,1 @@
-can get weather from any location entered
+add multiple markers and clickable location

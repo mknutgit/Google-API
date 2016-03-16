@@ -1,12 +1,26 @@
 var map;
 var marker;
+var myLatLng = {lat: 45.397, lng: -122.60};
+var markers = [];
+var infowindow;
+
 
 exports.initMap = function() {
-  var myLatLng = {lat: 45.397, lng: -122.25};
   map = new google.maps.Map(document.getElementById('map'), {
     center: myLatLng,
     zoom: 10
   });
+};
+
+exports.setMarker = function(coordinates) {
+  myLatLng.lat = coordinates.lat;
+  myLatLng.lng = coordinates.lon;
+  console.log(myLatLng);
+
+  // map = new google.maps.Map(document.getElementById('map'), {
+  //   center: myLatLng,
+  //   zoom: 10
+  // });
 
   var contentString = '<div id="content">'+
     '<div id="siteNotice">'+
@@ -17,7 +31,7 @@ exports.initMap = function() {
     '</div>'+
     '</div>';
 
-  var infowindow = new google.maps.InfoWindow({
+  infowindow = new google.maps.InfoWindow({
     content: contentString,
     maxWidth: 200
   });
@@ -34,9 +48,12 @@ exports.initMap = function() {
     toggleBounce();
     infowindow.open(map, marker);
   });
-}
+  marker.setMap(map);
+  markers.push(marker);
+  map.panTo(marker.getPosition());
+};
 
-exports.toggleBounce = function() {
+function toggleBounce() {
   if (marker.getAnimation() !== null) {
     marker.setAnimation(null);
   } else {
