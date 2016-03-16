@@ -1,1 +1,1 @@
-add a marker and it will bounce
+can get weather from any location entered

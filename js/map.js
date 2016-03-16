@@ -1,11 +1,25 @@
 var map;
 var marker;
 
-function initMap() {
-  var myLatLng = {lat: 45.397, lng: -122.25}
+exports.initMap = function() {
+  var myLatLng = {lat: 45.397, lng: -122.25};
   map = new google.maps.Map(document.getElementById('map'), {
     center: myLatLng,
     zoom: 10
+  });
+
+  var contentString = '<div id="content">'+
+    '<div id="siteNotice">'+
+    '</div>'+
+    '<h1 id="firstHeading" class="firstHeading">Marker BOUNCE</h1>'+
+    '<div id="bodyContent">'+
+    '<p><b>Bounce</b>, <b>BOUNCE</b></p>'+
+    '</div>'+
+    '</div>';
+
+  var infowindow = new google.maps.InfoWindow({
+    content: contentString,
+    maxWidth: 200
   });
 
   marker = new google.maps.Marker({
@@ -15,10 +29,14 @@ function initMap() {
     map: map,
     title: 'MARKER!!'
   });
-  marker.addListener('click', toggleBounce);
+
+  marker.addListener('click', function() {
+    toggleBounce();
+    infowindow.open(map, marker);
+  });
 }
 
-function toggleBounce() {
+exports.toggleBounce = function() {
   if (marker.getAnimation() !== null) {
     marker.setAnimation(null);
   } else {
@@ -64,11 +82,3 @@ function geolocationSuccess(position) {
 function geolocationError(positionError) {
   alert(positionError);
 }
-
-
-
-$(document).ready(function() {
-  $('#locateUser').click(locateUser);
-
-  google.maps.event.addDomListener(window, 'load', initMap);
-});
