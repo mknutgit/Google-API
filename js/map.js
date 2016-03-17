@@ -1,59 +1,85 @@
+var mapApiKey = require('./../.env').mapsApiKey;
 var map;
 var marker;
 var myLatLng = {lat: 45.397, lng: -122.60};
 var markers = [];
 var infowindow;
+var infowindows = [];
+var donkeykong = "/img/donkeykong-sm.png";
 
 
 exports.initMap = function() {
+  // map styling
+  var myStyles =[
+  {
+       featureType: "poi",
+       elementType: "labels",
+       stylers: [
+             { visibility: "off" }
+       ]
+   }
+  ];
+
   map = new google.maps.Map(document.getElementById('map'), {
     center: myLatLng,
-    zoom: 10
+    zoom: 11,
+    mapTypeId: google.maps.MapTypeId.Terrain,
+    styles: myStyles
   });
 };
 
-exports.setMarker = function(coordinates) {
-  myLatLng.lat = coordinates.lat;
-  myLatLng.lng = coordinates.lon;
+exports.setMarker = function(response) {
+  myLatLng.lat = response.coord.lat;
+  myLatLng.lng = response.coord.lon;
   console.log(myLatLng);
-
-  // map = new google.maps.Map(document.getElementById('map'), {
-  //   center: myLatLng,
-  //   zoom: 10
-  // });
 
   var contentString = '<div id="content">'+
     '<div id="siteNotice">'+
     '</div>'+
     '<h1 id="firstHeading" class="firstHeading">Marker BOUNCE</h1>'+
     '<div id="bodyContent">'+
+    '<li>' + response.name + '</li>'+
+    '<li>' + response.weather[0].description + '</li>'
     '<p><b>Bounce</b>, <b>BOUNCE</b></p>'+
     '</div>'+
     '</div>';
 
+//make the info window
   infowindow = new google.maps.InfoWindow({
     content: contentString,
     maxWidth: 200
   });
 
-  marker = new google.maps.Marker({
+//make the marker
+  var marker = new google.maps.Marker({
     position: myLatLng,
     draggable: true,
+    icon: donkeykong,
     animation: google.maps.Animation.DROP,
     map: map,
-    title: 'MARKER!!'
+    title: response.name
   });
 
+//what to do when this one is clicked
   marker.addListener('click', function() {
-    toggleBounce();
+    toggleBounce(marker);
     infowindow.open(map, marker);
   });
+  //put it on the map
   marker.setMap(map);
-  markers.push(marker);
+  // pan to the marker as it is created
   map.panTo(marker.getPosition());
+  //add to the markers list
+  markers.push(marker);
+  //add to infowindows
+  infowindows.push(infowindow);
 };
 
-function toggleBounce() {
+exports.setFocus = function(latLng) {
+  map.panTo(latLng);
+}
+
+function toggleBounce(marker) {
   if (marker.getAnimation() !== null) {
     marker.setAnimation(null);
   } else {

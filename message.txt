@@ -1,1 +1,1 @@
-add multiple markers and clickable location
+pan between markers when city name is clicked
