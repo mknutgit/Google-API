@@ -48,7 +48,6 @@ $(document).ready(function() {
         map.setFocus(myLatLng);
       }
     });
-    alert(event.currentTarget.textContent);
-    console.log('Hello!');
+    // alert(event.currentTarget.textContent);
   });
 });

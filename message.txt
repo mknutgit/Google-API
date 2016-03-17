@@ -1,1 +1,1 @@
-pan between markers and marker is not duplicated
+infowindow shows appropriate information for location
