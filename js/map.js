@@ -1,7 +1,10 @@
 var mapApiKey = require('./../.env').mapsApiKey;
 var map;
 var marker;
-var myLatLng = {lat: 45.397, lng: -122.60};
+var myLatLng = {
+  lat: 45.397,
+  lng: -122.60
+};
 var markers = [];
 var infowindow;
 var infowindows = [];
@@ -10,15 +13,13 @@ var donkeykong = "/img/donkeykong-sm.png";
 
 exports.initMap = function() {
   // map styling
-  var myStyles =[
-  {
-       featureType: "poi",
-       elementType: "labels",
-       stylers: [
-             { visibility: "off" }
-       ]
-   }
-  ];
+  var myStyles = [{
+    featureType: "poi",
+    elementType: "labels",
+    stylers: [{
+      visibility: "off"
+    }]
+  }];
 
   map = new google.maps.Map(document.getElementById('map'), {
     center: myLatLng,
@@ -33,24 +34,24 @@ exports.setMarker = function(response) {
   myLatLng.lng = response.coord.lon;
   console.log(myLatLng);
 
-  var contentString = '<div id="content">'+
-    '<div id="siteNotice">'+
-    '</div>'+
-    '<h1 id="firstHeading" class="firstHeading">Marker BOUNCE</h1>'+
-    '<div id="bodyContent">'+
-    '<li>' + response.name + '</li>'+
-    '<li>' + response.weather[0].description + '</li>'
-    '<p><b>Bounce</b>, <b>BOUNCE</b></p>'+
-    '</div>'+
+  var contentString = '<div id="content">' +
+    '<div id="siteNotice">' +
+    '</div>' +
+    '<h1 id="firstHeading" class="firstHeading">Marker BOUNCE</h1>' +
+    '<div id="bodyContent">' +
+    '<li>' + response.name + '</li>' +
+    '<li>' + response.weather[0].description + '</li>' +
+    '<p><b>Bounce</b>, <b>BOUNCE</b></p>' +
+    '</div>' +
     '</div>';
 
-//make the info window
+  //make the info window
   infowindow = new google.maps.InfoWindow({
     content: contentString,
     maxWidth: 200
   });
 
-//make the marker
+  //make the marker
   var marker = new google.maps.Marker({
     position: myLatLng,
     draggable: true,
@@ -60,7 +61,7 @@ exports.setMarker = function(response) {
     title: response.name
   });
 
-//what to do when this one is clicked
+  //what to do when this one is clicked
   marker.addListener('click', function() {
     toggleBounce(marker);
     infowindow.open(map, marker);
@@ -77,7 +78,7 @@ exports.setMarker = function(response) {
 
 exports.setFocus = function(latLng) {
   map.panTo(latLng);
-}
+};
 
 function toggleBounce(marker) {
   if (marker.getAnimation() !== null) {
@@ -94,8 +95,7 @@ function locateUser() {
       timeout: 10 * 1000
     };
     navigator.geolocation.getCurrentPosition(geolocationSuccess, geolocationError, positionOptions);
-  }
-  else {
+  } else {
     alert("Your browser doesn't support the Geolocation API");
   }
 }
@@ -109,9 +109,9 @@ function geolocationSuccess(position) {
   var userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
   var myOptions = {
-    zoom : 16,
-    center : userLatLng,
-    mapTypeId : google.maps.MapTypeId.ROADMAP
+    zoom: 16,
+    center: userLatLng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
   };
   // Draw the map - you have to use 'getElementById' here.
   var mapObject = new google.maps.Map(document.getElementById("map"), myOptions);

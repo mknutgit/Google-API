@@ -17,12 +17,11 @@ $(document).ready(function() {
     //get weather object from API
     $.get('http://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=imperial&appid=' + apiKey).then(function(newResponse) {
       console.log(newResponse);
-      map.initMap(newResponse);
       //push to responses
       responses.push(newResponse);
-      responses.forEach(function(response) {
-        map.setMarker(response);
-      });
+      // responses.forEach(function(response) {
+      map.setMarker(newResponse);
+      // });
       console.log("all the responses", responses);
 
       //show weather info
@@ -35,7 +34,6 @@ $(document).ready(function() {
     }).fail(function(error) {
       $('.showWeather').text(error.message);
     });
-
   });
 
   $('ul').on('click', '.city-name', function(event) {

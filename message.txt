@@ -1,1 +1,1 @@
-pan between markers when city name is clicked
+pan between markers and marker is not duplicated
