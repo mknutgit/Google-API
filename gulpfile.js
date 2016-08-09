@@ -1,3 +1,5 @@
+// Requires/Includes for this file to work
+
 var lib = require('bower-files')({
   "overrides":{
     "bootstrap" : {
@@ -18,12 +20,15 @@ var utilities = require('gulp-util');
 var del = require('del');
 var jshint = require('gulp-jshint');
 var browserSync = require('browser-sync').create();
-var sass = require('gulp-sass');
-var sourcemaps = require('gulp-sourcemaps');
-var git = require('gulp-git');
-var gitignore = require('gulp-gitignore');
-var fs = require('fs');
+var sass = require('gulp-sass'); // scss
+var sourcemaps = require('gulp-sourcemaps'); // used for scss
+var git = require('gulp-git'); // git add/commit/status
+var gitignore = require('gulp-gitignore'); // gitignore
+var fs = require('fs'); // Read files
 var buildProduction = utilities.env.production;
+
+// End Requires/Includes
+// Javascript Build Functions
 
 gulp.task('concatInterface', function() {
   return gulp.src(['./js/*-interface.js'])
@@ -31,11 +36,23 @@ gulp.task('concatInterface', function() {
   .pipe(gulp.dest('./tmp'));
 });
 
-gulp.task('jsBrowserify', ['concatInterface'], function() {
+gulp.task('jshint', function(){
+  return gulp.src(['js/*.js', 'js/modules/*.js'])
+  .pipe(jshint())
+  .pipe(jshint.reporter('default'))
+  .pipe(jshint.reporter('fail'));
+});
+
+gulp.task('jsBrowserify', ['concatInterface', 'jshint'], function() {
   return browserify({ entries: ['./tmp/allConcat.js'] })
   .bundle()
   .pipe(source('app.js'))
   .pipe(gulp.dest('./build/js'));
+});
+
+gulp.task('jsBuild', ['jsBrowserify'], function() {
+  browserSync.reload();
+  gulp.start('gitStatus');
 });
 
 gulp.task("minifyScripts", ["jsBrowserify"], function(){
@@ -44,9 +61,25 @@ gulp.task("minifyScripts", ["jsBrowserify"], function(){
   .pipe(gulp.dest("./build/js"));
 });
 
+// End Javascript Build Functions
+// Start Full Build Function
+
 gulp.task("clean", function(){
   return del(['build', 'tmp']);
 });
+
+gulp.task("build", ['clean'], function(){
+  if (buildProduction) {
+    gulp.start('minifyScripts');
+  } else {
+    gulp.start('jsBrowserify');
+  }
+  gulp.start('bower');
+  gulp.start('cssBuild');
+});
+
+// End Full Build Functions
+// Start Bower Build Functions
 
 gulp.task('bowerJS', function() {
   return gulp.src(lib.ext('js').files)
@@ -63,52 +96,17 @@ gulp.task('bowerCSS', function(){
 
 gulp.task('bower', ['bowerJS', 'bowerCSS']);
 
-gulp.task("build", ['clean'], function(){
-  if (buildProduction) {
-    gulp.start('minifyScripts');
-  } else {
-    gulp.start('jsBrowserify');
-  }
-  gulp.start('bower');
-  gulp.start('cssBuild')
-});
-
-gulp.task('jsBuild', ['jsBrowserify', 'jshint'], function() {
-  browserSync.reload();
-  gulp.start('gitStatus');
-});
-
 gulp.task('bowerBuild', ['bower'], function() {
   browserSync.reload();
   gulp.start('gitStatus');
 });
 
+// End Bower Build Functions
+// Start HTML/SCSS Build Functions
+
 gulp.task('htmlBuild', function() {
   browserSync.reload();
   gulp.start('gitStatus');
-});
-
-gulp.task('serve', function() {
-  browserSync.init({
-    server: {
-      baseDir: "./",
-      index: "index.html"
-    }
-  });
-  gulp.watch(['js/*.js'], ['jsBuild']);
-  gulp.watch(['bower.json'], ['bowerBuild']);
-  gulp.watch(['*.html'], ['htmlBuild']);
-  gulp.watch("scss/*scss", ['cssBuild']);
-  gulp.watch("message.txt", ['gitCommit']);
-  gulp.watch(["*"], ["gitStatus"]);
-});
-
-gulp.task('jshint', function(){
-  return gulp.src(['js/*.js'])
-  .pipe(jshint())
-  .pipe(jshint.reporter('default'))
-  .pipe(jshint.reporter('jshint-stylish'))
-  .pipe(jshint.reporter('fail'));
 });
 
 gulp.task('cssBuild', function() {
@@ -119,6 +117,9 @@ gulp.task('cssBuild', function() {
     .pipe(gulp.dest('./build/css'))
     .pipe(browserSync.stream());
 });
+
+// End HTML/SCSS Build Functions
+// Start Gulp-Git Functions
 
 gulp.task('gitAdd', function(){
   return gulp.src('./*')
@@ -139,4 +140,22 @@ gulp.task('gitStatus', function() {
   git.status({args: '--porcelain'}, function (err, stdout) {
     if(err) throw err;
   });
+});
+
+// End Gulp-Git Functions
+// Start Serve Function
+
+gulp.task('serve', function() {
+  browserSync.init({
+    server: {
+      baseDir: "./",
+      index: "index.html"
+    }
+  });
+  gulp.watch(['js/*.js'], ['jsBuild']);
+  gulp.watch(['bower.json'], ['bowerBuild']);
+  gulp.watch(['*.html'], ['htmlBuild']);
+  gulp.watch("scss/*scss", ['cssBuild']);
+  gulp.watch("message.txt", ['gitCommit']);
+  gulp.watch(["*"], ["gitStatus"]);
 });
