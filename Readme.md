@@ -19,16 +19,16 @@ _The goal of this project is to show competency with node.js, gulp and dependenc
 
 * If you already have an OpenWeatherMap API and a Google Maps API, creat a .env file in the top level of the project directory.  Then copy and paste the following into the file.  Fill the appropraiate API key between the quotation marks and save.
 
-    //OpenWeatherMap Key
-    exports.apiKey = " Key here ";
+    * //OpenWeatherMap Key
+    * exports.apiKey = " Key here ";
 
-    //Google Maps API key
-    exports.mapApiKey = " Key here ";
+    * //Google Maps API key
+    * exports.mapApiKey = " Key here ";
 
 * If you do not have the appropraiate keys you can get each of them at the following links:
 
-    [OpenWeatherMap](http://openweathermap.org/appid)
-    [Google Maps](https://developers.google.com/maps/documentation/javascript/)
+    1. [OpenWeatherMap](http://openweathermap.org/appid)
+    2. [Google Maps](https://developers.google.com/maps/documentation/javascript/)
 
 * You will need to install dependencies using npm and bower. From the root directory...
 
