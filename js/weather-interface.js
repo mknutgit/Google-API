@@ -25,7 +25,7 @@ $(document).ready(function() {
       console.log("all the responses", responses);
 
       //show weather info
-      $('.showWeather').append('<li class="city-name"><h4>' + newResponse.name + '</h4></li>');
+      $('.showWeather').append('<h3 class="city-name">' + newResponse.name + '</h3>');
       $('.showWeather').append("<li>The humidity in " + newResponse.name + " is " + newResponse.main.humidity + "%</li>");
       $('.showWeather').append("<li>and the pressure is: " + newResponse.main.pressure + '</li>');
       $('.showWeather').append('<li>The temperature is: ' + newResponse.main.temp + 'degrees Farenheit');
