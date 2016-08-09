@@ -32,13 +32,13 @@ _The goal of this project is to show competency with node.js, gulp and dependenc
 
 * You will need to install dependencies using npm and bower. From the root directory...
 
-    npm install
-    bower install
+    * npm install
+    * bower install
 
 * Gulp is used to handle both building the site and launching a server to host the site. From the root directory...
 
-    gulp build
-    gulp serve
+    * gulp build
+    * gulp serve
 
 ## Known Bugs
 
